@@ -19,8 +19,8 @@
                         <thead>
                             <tr class="border-b dark:border-gray-600">
                                 <th class="py-2">商品名</th>
-                                <th class="py-2">価格</th>
-                                <th class="py-2">数量</th>
+                                <th class="py-2 text-center" >価格</th>
+                                <th class="py-2 text-center">数量</th>
                                 <th class="py-2 text-right">小計</th>
                             </tr>
                         </thead>
@@ -28,10 +28,16 @@
                             @foreach ($cart as $id => $item)
                                 <tr class="border-t dark:border-gray-700">
                                     <td class="py-4">{{ $item['name'] }}</td>
-                                    <td>{{ number_format($item['price']) }}円</td>
-                                    <td>{{ $item['quantity'] }}</td>
+                                    <td class="text-center">{{ number_format($item['price']) }}円</td>
+                                    <td class="text-center">{{ $item['quantity'] }}</td>
                                     <td class="text-right">{{ number_format($item['price'] * $item['quantity']) }}円</td>
-                                </tr>
+                                    <td class="text-center"> <form action="{{ route('cart.remove', $id) }}" method="POST">
+                                             @csrf
+                                             @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:underline text-sm">削除</button>
+                                        </form>
+                                     </td> 
+                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -41,8 +47,11 @@
                     </div>
 
                     <div class="text-center mt-8">
-                        <a href="#" class="bg-green-500 text-white text-lg px-8 py-3 rounded-lg hover:bg-green-600">レジに進む</a>
-                    </div>
+                            <form action="{{ route('order.store') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="bg-green-500 text-white text-lg px-8 py-3 rounded-lg hover:bg-green-600">注文を確定する</button>
+                        </form>
+                   </div>
                 @else
                     <p class="text-gray-900 dark:text-gray-100">カートは空です。</p>
                 @endif

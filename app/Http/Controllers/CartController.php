@@ -51,4 +51,22 @@ class CartController extends Controller
 
         return view('cart.index', compact('cart', 'totalPrice'));
     }
+
+    public function remove(Request $request, $id)
+    {
+        // セッションからカート情報を取得
+        $cart = $request->session()->get('cart', []);
+
+        // 指定された商品IDがカートに存在するかチェック
+        if (isset($cart[$id])) {
+            // 存在すれば、その商品をカート配列から削除
+            unset($cart[$id]);
+        }
+
+        // 更新したカート情報をセッションに保存
+        $request->session()->put('cart', $cart);
+
+        // カート表示ページにリダイレクト
+        return redirect()->route('cart.index')->with('success', '商品をカートから削除しました。');
+    }
 }

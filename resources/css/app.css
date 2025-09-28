@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* resources/css/app.css */
+
+body {
+    background-color: #f3f4f6; /* 例：薄いグレー */
+}

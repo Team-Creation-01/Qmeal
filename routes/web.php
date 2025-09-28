@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController; // ←ファイルの先頭にこの行があるかも確認
 use App\Http\Controllers\CartController; // ★★★ この行があるか確認！ ★★★
+use App\Http\Controllers\OrderController; // ★★★ この行があるか確認！ ★★★
+use App\Http\Controllers\CafeteriaController; // ★忘れずに追加
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +23,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/menu/{menu}', [MenuController::class, 'show'])->name('menu.show');
     Route::post('/cart/add/{menu}', [CartController::class, 'add'])->name('cart.add');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+    Route::get('/order/complete', [OrderController::class, 'complete'])->name('order.complete');
+    Route::get('/cafeteria/select', [CafeteriaController::class, 'select'])->name('cafeteria.select');
+    Route::post('/cafeteria/select', [CafeteriaController::class, 'store'])->name('cafeteria.store');
 });
 
 require __DIR__.'/auth.php';
