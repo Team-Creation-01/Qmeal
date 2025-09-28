@@ -18,9 +18,13 @@
                                     <p class="text-gray-600 dark:text-gray-400">{{ $menu->category->name }}</p>
                                     <p class="text-lg font-semibold mt-2">{{ $menu->price }}円</p>
                                 </div>
-                                <div class="mt-4 text-right">
-                                    <a href="{{ route('menu.show', $menu) }}" class="text-blue-500 hover:underline">詳細を見る</a>
-                                </div>
+                                <div class="mt-4 flex justify-between items-center">
+                                  <a href="{{ route('menu.show', $menu) }}" class="text-blue-500 hover:underline">詳細</a>
+                                           <form action="{{ route('cart.add', $menu) }}" method="POST">
+                                           @csrf
+                                          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">カートに追加</button>
+                                       </form>
+                                   </div>
                             </div>
                         @endforeach
                     </div>
