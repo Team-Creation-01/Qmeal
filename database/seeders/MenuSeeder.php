@@ -15,8 +15,8 @@ class MenuSeeder extends Seeder
     {
         // センターゾーン食堂のメニュー
         Menu::create([
-            'name' => 'チキン南蛮定食', 'price' => 550, 'calories' => 800,
-            'cafeteria_id' => 1, 'category_id' => 1, 'image_path' => 'images/chicken_nanban.jpg'
+            'name' => 'ジャンボカツカレー', 'price' => 550, 'calories' => 800,
+            'cafeteria_id' => 1, 'category_id' => 1, 'image_path' => 'images/katsu_carry.jpeg'
         ]);
         Menu::create([
             'name' => 'カツ丼', 'price' => 500, 'calories' => 750,
