@@ -11,6 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+        
+        Schema::create('cafeterias', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('opening_hours')->nullable();
+            $table->timestamps();
+        });
+        
         Schema::create('cache', function (Blueprint $table) {
             $table->string('key')->primary();
             $table->mediumText('value');
