@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Menu;
+use Illuminate\Support\Str; // ★忘れずに追加
+use App\Models\Cafeteria;   // ★忘れずに追加
 
 class OrderController extends Controller
 {
@@ -33,12 +35,30 @@ class OrderController extends Controller
                 $totalPrice += $item['price'] * $item['quantity'];
             }
 
-            // 注文情報（ordersテーブル）を保存
-            $order = Order::create([
-                'user_id' => Auth::id(), // ログインしているユーザーのID
-                'total_price' => $totalPrice,
-                'status' => '調理準備中',
-            ]);
+                        // 選択中の食堂情報を取得
+                        $cafeteriaId = $request->session()->get('selected_cafeteria_id');
+                        $cafeteria = Cafeteria::find($cafeteriaId);
+            
+                        // バウチャーコードのプレフィックスを決定
+                        $prefix = '';
+                        if ($cafeteria) {
+                            // 食堂名の最初の3文字などをプレフィックスにする（例: CET, EST）
+                            $prefix = strtoupper(substr($cafeteria->name, 0, 3));
+                        }
+            
+                        // ユニークなバウチャーコードを生成
+                        do {
+                            $randomCode = Str::upper(Str::random(3)) . '-' . Str::upper(Str::random(3));
+                            $voucherCode = $prefix . $randomCode;
+                        } while (Order::where('voucher_code', $voucherCode)->exists()); // 念のため重複チェック
+            
+                        // 注文情報（ordersテーブル）を保存
+                        $order = Order::create([
+                            'user_id' => Auth::id(),
+                            'total_price' => $totalPrice,
+                            'status' => '調理準備中',
+                            'voucher_code' => $voucherCode, // ★バウチャーコードを追加
+                        ]);
 
             // 注文詳細（order_detailsテーブル）を保存
             foreach ($cart as $menuId => $item) {
@@ -67,8 +87,28 @@ class OrderController extends Controller
     /**
      * 注文完了画面を表示する
      */
-    public function complete()
+    public function complete(Order $order)
     {
-        return view('order.complete');
+        // ログインユーザーの注文かどうかのチェック（任意だが推奨）
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+        return view('order.complete', compact('order'));
     }
+
+   // 注文履歴画面を表示する
+    public function history()
+    {
+        // ログインしているユーザーのIDを取得
+        $userId = Auth::id();
+
+        // ユーザーIDに紐づく注文を、関連する詳細とメニュー情報も含めて取得
+        // latest() で新しい順に並び替え
+        $orders = Order::where('user_id', $userId)
+                        ->with('details.menu') // ★リレーションを最大限活用
+                        ->latest()
+                        ->get();
+
+        return view('order.history', compact('orders'));
+}
 }

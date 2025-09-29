@@ -25,9 +25,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/order', [OrderController::class, 'store'])->name('order.store');
-    Route::get('/order/complete', [OrderController::class, 'complete'])->name('order.complete');
+    Route::get('/order/complete/{order}', [OrderController::class, 'complete'])->name('order.complete');
     Route::get('/cafeteria/select', [CafeteriaController::class, 'select'])->name('cafeteria.select');
     Route::post('/cafeteria/select', [CafeteriaController::class, 'store'])->name('cafeteria.store');
+    //Route::get('/order/complete', [OrderController::class, 'complete'])->name('order.complete');
+    Route::get('/order/history', [OrderController::class, 'history'])->name('order.history');
 });
 
 require __DIR__.'/auth.php';
