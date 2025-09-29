@@ -81,7 +81,7 @@ class OrderController extends Controller
         $request->session()->forget('cart');
 
         // 注文完了ページにリダイレクト
-        return redirect()->route('order.complete');
+        return redirect()->route('order.complete', ['order' => $order->id]);
     }
 
     /**

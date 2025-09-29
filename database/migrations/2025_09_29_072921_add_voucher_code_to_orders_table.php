@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            
+            $table->string('voucher_code')->unique()->nullable()->after('status');
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            
+            $table->dropColumn('voucher_code');
         });
     }
 };
