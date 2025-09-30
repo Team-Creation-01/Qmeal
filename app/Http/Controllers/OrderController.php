@@ -10,6 +10,7 @@ use App\Models\OrderDetail;
 use App\Models\Menu;
 use Illuminate\Support\Str; // ★忘れずに追加
 use App\Models\Cafeteria;   // ★忘れずに追加
+use Carbon\Carbon; // ★忘れずに追加
 
 class OrderController extends Controller
 {
@@ -18,6 +19,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+
         // セッションからカート情報を取得
         $cart = $request->session()->get('cart', []);
         
@@ -52,12 +54,22 @@ class OrderController extends Controller
                             $voucherCode = $prefix . $randomCode;
                         } while (Order::where('voucher_code', $voucherCode)->exists()); // 念のため重複チェック
             
+                        // バリデーション：受け取り時刻が必須かつ日付形式であることを確認
+                         // バリデーションルールを修正
+        $request->validate([
+            'pickup_time' => 'required|date',
+            'payment_method' => 'required|string|in:PayPay,現金,クレジットカード,LINE Pay', // ★この行を修正・追加
+        ]);
+        
                         // 注文情報（ordersテーブル）を保存
                         $order = Order::create([
                             'user_id' => Auth::id(),
+                            'cafeteria_id' => $request->session()->get('selected_cafeteria_id'), // ★この行を追加
                             'total_price' => $totalPrice,
                             'status' => '調理準備中',
-                            'voucher_code' => $voucherCode, // ★バウチャーコードを追加
+                            'voucher_code' => $voucherCode, // ★バウチャーコードを追加\
+                            'pickup_time' => $request->pickup_time, // ★この行を追加
+                            'payment_method' => $request->payment_method, // ★この行を追加
                         ]);
 
             // 注文詳細（order_detailsテーブル）を保存
@@ -110,5 +122,59 @@ class OrderController extends Controller
                         ->get();
 
         return view('order.history', compact('orders'));
+}
+
+    //注文をキャンセルする
+public function cancel(Order $order)
+{
+   // 1. 本人の注文かどうかの確認
+   if ($order->user_id !== Auth::id()) {
+       abort(403, '不正な操作です。');
+   }
+
+   // 2. 既にキャンセル済みでないか確認
+   if ($order->status !== '調理準備中') {
+       return redirect()->route('order.history')->with('error', 'この注文はすでに処理済みのため、キャンセルできません。');
+   }
+
+   // 3. キャンセル可能な時間内か確認
+   $now = Carbon::now('Asia/Tokyo');
+   if ($now->diffInMinutes($order->pickup_time, false) <= 30) {
+       return redirect()->back()->with('error', '受け取り時刻の30分前を過ぎたため、キャンセルできません。');
+   }
+
+   // 4. 全てのチェックをパスしたら、ステータスを更新
+   $order->status = 'キャンセル済み';
+   $order->save();
+
+   // 注文履歴ページにリダイレクト
+   return redirect()->route('order.history')->with('success', '注文をキャンセルしました。');
+}
+
+        public function vouchers()
+         {
+          // ログインユーザーの、ステータスが「調理準備中」の注文のみ取得
+         $vouchers = Order::where('user_id', Auth::id())
+                        ->where('status', '調理準備中')
+                        ->with('cafeteria') // 食堂情報も一緒に取得
+                        ->orderBy('pickup_time', 'asc') // 受け取り時刻が近い順に並び替え
+                        ->get();
+
+      return view('order.vouchers', compact('vouchers'));
+   }
+
+   public function markAsCompleted(Order $order)
+{
+    // 本人の注文かどうかの確認
+    if ($order->user_id !== Auth::id()) {
+        abort(403, '不正な操作です。');
+    }
+
+    // ステータスを更新
+    $order->status = '受け取り済み';
+    $order->save();
+
+    // バウチャー一覧ページにリダイレクト
+    return redirect()->route('vouchers.index')->with('success', '引換券を使用済みにしました。');
 }
 }

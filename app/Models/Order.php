@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany; // ★忘れずに追加
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // ★★★ この行を追加 ★★★
 
 class Order extends Model
 {
@@ -15,5 +16,10 @@ class Order extends Model
     public function details(): HasMany
     {
         return $this->hasMany(OrderDetail::class);
+    }
+
+    public function cafeteria(): BelongsTo
+    {
+        return $this->belongsTo(Cafeteria::class);
     }
 }

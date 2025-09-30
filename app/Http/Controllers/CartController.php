@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menu;
+use Carbon\Carbon; // ★忘れずに追加
 
 class CartController extends Controller
 {
@@ -49,7 +50,32 @@ class CartController extends Controller
             $totalPrice += $item['price'] * $item['quantity'];
         }
 
-        return view('cart.index', compact('cart', 'totalPrice'));
+        // 受け取り時間の選択肢を生成
+        $pickupTimes = [];
+        // 現在時刻を基準にする（日本時間）
+        $now = Carbon::now('Asia/Tokyo');
+
+        // 開始時刻を決定（現在時刻の30分後から、15分単位で切り上げ）
+        $startTime = $now->copy()->addMinutes(30);
+        $remainder = $startTime->minute % 15;
+        if ($remainder !== 0) {
+            $startTime->addMinutes(15 - $remainder)->second(0);
+        }
+
+        // 終了時刻を決定（3日後の終わりまで）
+        $endTime = $now->copy()->addDays(3)->endOfDay();
+
+        // 15分刻みで選択肢を生成
+        $currentTime = $startTime->copy();
+        while ($currentTime->lte($endTime)) {
+            $pickupTimes[] = [
+                'value' => $currentTime->toDateTimeString(), // DB保存用の値 (例: 2025-09-30 18:45:00)
+                'label' => $currentTime->format('m月d日 H:i'),   // 表示用の値 (例: 09月30日 18:45)
+            ];
+            $currentTime->addMinutes(15);
+        }
+
+        return view('cart.index', compact('cart', 'totalPrice','pickupTimes'));
     }
 
     public function remove(Request $request, $id)

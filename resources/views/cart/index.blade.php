@@ -49,6 +49,29 @@
                     <div class="text-center mt-8">
                             <form action="{{ route('order.store') }}" method="POST">
                             @csrf
+                            <div class="mb-6 text-left">
+                                 <label for="pickup_time" class="block font-medium text-sm text-gray-900 dark:text-gray-100 mb-2">
+                                      受け取り時刻を選択してください
+                                 </label>
+                             <select id="pickup_time" name="pickup_time" required class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mb-5">
+                                   @foreach ($pickupTimes as $time)
+                                  <option value="{{ $time['value'] }}">{{ $time['label'] }}</option>
+                                    @endforeach
+                                  </select>
+                                </div>
+
+                                <div class="mb-6 text-left">
+        <label for="payment_method" class="block font-medium text-sm text-gray-900 dark:text-gray-100 mb-2">
+            お支払い方法を選択してください
+        </label>
+        <select id="payment_method" name="payment_method" required class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+            <option value="PayPay">PayPay</option>
+            <option value="現金">現金</option>
+            <option value="クレジットカード">クレジットカード</option>
+            <option value="LINE Pay">LINE Pay</option>
+        </select>
+    </div>
+                             
                             <button type="submit" class="bg-green-500 text-white text-lg px-8 py-3 rounded-lg hover:bg-green-600">注文を確定する</button>
                         </form>
                    </div>

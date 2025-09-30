@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/cafeteria/select', [CafeteriaController::class, 'store'])->name('cafeteria.store');
     //Route::get('/order/complete', [OrderController::class, 'complete'])->name('order.complete');
     Route::get('/order/history', [OrderController::class, 'history'])->name('order.history');
+    Route::delete('/order/{order}/cancel', [OrderController::class, 'cancel'])->name('order.cancel');
+    Route::get('/vouchers', [OrderController::class, 'vouchers'])->name('vouchers.index');
+    Route::post('/vouchers/{order}/complete', [OrderController::class, 'markAsCompleted'])->name('vouchers.complete');
 });
 
 require __DIR__.'/auth.php';
