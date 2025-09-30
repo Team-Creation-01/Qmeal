@@ -14,9 +14,12 @@
                 <p class="text-gray-600 dark:text-gray-400 mb-8">
                     商品受け取りの際に、以下の引換番号を提示してください。
                 </p>
+                <p class="text-gray-600 dark:text-gray-400 mb-8">
+                    ※お受け取り予定時刻から60分経過するとバウチャーが自動で無効になります。
+                </p>
 
                 <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-6 my-8">
-                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">引換番号（バウチャー）</p>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">あなたのバウチャー</p>
                     <p class="text-4xl font-mono font-bold text-gray-900 dark:text-gray-100 tracking-wider">
                         {{ $order->voucher_code }}
                     </p>
@@ -45,7 +48,8 @@
     @if($canCancel)
         <div class="mt-8 pt-6 border-t dark:border-gray-600">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                間違えて注文した場合、受け取り予定時刻の30分前までキャンセルが可能です。
+            キャンセルポリシー：
+            受け取り予定時刻の30分前までキャンセルが可能です。
             </p>
             <form method="POST" action="{{ route('order.cancel', $order) }}" onsubmit="return confirm('本当にこの注文をキャンセルしますか？');">
                 @csrf
@@ -58,7 +62,7 @@
     @else
         <div class="mt-8 pt-6 border-t dark:border-gray-600">
             <p class="text-sm text-yellow-600 dark:text-yellow-400">
-                受け取り予定時刻の30分前を過ぎたため、この注文はキャンセルできません。
+                申し訳ございません。受け取り予定時刻の30分前を過ぎたため、この注文はキャンセルできません。
             </p>
         </div>
     @endif

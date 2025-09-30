@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            有効な引換番号（バウチャー）
+            有効なバウチャー
         </h2>
     </x-slot>
 
@@ -31,7 +31,7 @@
             @empty
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <p>現在、有効な引換券はありません。</p>
+                        <p>現在、有効なバウチャーはありません。追加するには、ホームからメニューを注文します。</p>
                     </div>
                 </div>
             @endforelse

@@ -18,6 +18,7 @@
                     <x-nav-link :href="route('vouchers.index')" :active="request()->routeIs('vouchers.index')">
                        {{ __('バウチャー') }}
                   </x-nav-link>
+              
                 </div>
             </div>
 
