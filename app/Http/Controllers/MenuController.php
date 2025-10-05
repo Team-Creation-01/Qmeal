@@ -27,6 +27,8 @@ class MenuController extends Controller
         $menus = Menu::where('cafeteria_id', $selectedCafeteriaId)
                        ->with('category')
                        ->get();
+
+                       // dd($menus); // ★★★ この行を追加してください！ ★★★
     
         // 取得したデータをビューに渡す
         return view('dashboard', compact('categories', 'menus', 'selectedCafeteria'));

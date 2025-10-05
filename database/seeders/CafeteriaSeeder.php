@@ -15,5 +15,7 @@ class CafeteriaSeeder extends Seeder
     {
         Cafeteria::create(['name' => 'センターゾーン食堂', 'opening_hours' => '11:00-19:00']);
         Cafeteria::create(['name' => 'イーストゾーン食堂', 'opening_hours' => '11:00-14:00']);
+        Cafeteria::create(['name' => 'ビッグどら', 'opening_hours' => '10:00-17:00']);
+        Cafeteria::create(['name' => '理系食堂', 'opening_hours' => '11:30-15:00']);
     }
 }

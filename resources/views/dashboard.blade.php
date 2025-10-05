@@ -14,9 +14,10 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        @foreach ($menus as $menu)
+                    @forelse ($menus as $menu)
                             <div class="border dark:border-gray-600 rounded-lg p-4 flex flex-col justify-between">
                                 <div>
+                                    <img src="{{ asset($menu->image_path) }}" alt="{{ $menu->name }}" class="w-full h-40 object-cover mb-4 rounded">
                                     <h3 class="text-lg font-bold">{{ $menu->name }}</h3>
                                     <p class="text-gray-600 dark:text-gray-400">{{ $menu->category->name }}</p>
                                     <p class="text-lg font-semibold mt-2">{{ $menu->price }}円</p>
@@ -29,7 +30,17 @@
                                        </form>
                                    </div>
                             </div>
-                        @endforeach
+                            @empty
+        {{-- データが空っぽだった場合は、このメッセージを表示 --}}
+        <div class="col-span-3 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 text-gray-900 dark:text-gray-100">
+                <p class="text-center">
+                    こんにちは、{{ auth()->user()->name }}さん！<br>
+                    ご利用になる食堂を、上の「食堂を変更する」からお選びください。
+                </p>
+            </div>
+        </div>
+    @endforelse
                     </div>
 
                 </div>

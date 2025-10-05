@@ -22,7 +22,7 @@
                             <form method="POST" action="{{ route('vouchers.complete', $voucher) }}" onsubmit="return confirm('この引換券を使用済みにします。よろしいですか？');">
                                 @csrf
                                 <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
-                                    受け取り済みにする
+                                    "受け取り済み"にする
                                 </button>
                             </form>
                         </div>
