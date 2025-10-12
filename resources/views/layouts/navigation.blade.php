@@ -18,7 +18,9 @@
                     <x-nav-link :href="route('vouchers.index')" :active="request()->routeIs('vouchers.index')">
                        {{ __('バウチャー') }}
                   </x-nav-link>
-              
+                  <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
+                       {{ __('カート') }}
+                   </x-nav-link>
                 </div>
             </div>
 

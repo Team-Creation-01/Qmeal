@@ -9,7 +9,7 @@ use Carbon\Carbon; // ★忘れずに追加
 class CartController extends Controller
 {
     /**
-     * カートに商品を追加する
+     * カートに商品を追加すると、addメソッドが呼び出される
      */
     public function add(Request $request, Menu $menu)
     {
