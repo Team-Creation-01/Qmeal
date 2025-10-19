@@ -40,6 +40,7 @@
                 </p>
             </div>
         </div>
+        
     @endforelse
                     </div>
 
@@ -47,4 +48,5 @@
             </div>
         </div>
     </div>
+    <a href="{{ route('kitchen.index')}}" class="text-sm text-blue-500 hover:underline">キッチン</a><!--追加部分　キッチンの画面に移動 -->
 </x-app-layout>
