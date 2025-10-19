@@ -18,7 +18,7 @@ class OrderController extends Controller
     /**
      * 注文をデータベースに保存し、決済処理を開始する
      */
-    public function store(Request $request, PayPayService $payPayService)
+    public function store(Request $request)
     {
         // (1) バリデーションをメソッドの最初に移動
         $request->validate([
@@ -83,10 +83,20 @@ class OrderController extends Controller
         // ★PayPayが選択された場合
         if ($request->payment_method === 'PayPay') {
             try {
-                // 引数で受け取った $payPayService を使う
-                $response = $payPayService->createQrCode($order);
-                $qrCodeUrl = $response['data']['url'];
 
+                $merchantPaymentId = Str::uuid();
+
+                //var_dump($payPayService);
+                //exit;
+
+                // 引数で受け取った $payPayService を使う
+                $response = (app()->make(PayPayService::class))->createQrCode(
+                    $merchantPaymentId,
+                    $totalPrice,
+                    'qmealでのご注文'
+                );
+                $qrCodeUrl = $response['data']['url'];
+            
                 // カートを空にする
                 $request->session()->forget('cart');
 
