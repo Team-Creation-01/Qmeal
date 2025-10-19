@@ -6,6 +6,7 @@ use App\Http\Controllers\MenuController; // ←ファイルの先頭にこの行
 use App\Http\Controllers\CartController; // ★★★ この行があるか確認！ ★★★
 use App\Http\Controllers\OrderController; // ★★★ この行があるか確認！ ★★★
 use App\Http\Controllers\CafeteriaController; // ★忘れずに追加
+use App\Http\Controllers\KitchenController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/order/{order}/cancel', [OrderController::class, 'cancel'])->name('order.cancel');
     Route::get('/vouchers', [OrderController::class, 'vouchers'])->name('vouchers.index');
     Route::post('/vouchers/{order}/complete', [OrderController::class, 'markAsCompleted'])->name('vouchers.complete');
+
+    //追加した部分
+    Route::get('/kitchen/orders', [KitchenController::class, 'index'])->name('kitchen.index');
+    
 });
 
 require __DIR__.'/auth.php';
