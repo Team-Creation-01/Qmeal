@@ -67,7 +67,7 @@ class KitchenController extends Controller
      */
     public function updateStatus(Request $request, Order $order): JsonResponse
     {
-        // ★ ダミーロジックを削除し、ルートモデルバインディング（Order $order）を使用 ★
+        //ルートモデルバインディング（Order $order）を使用 ★
         // これにより、$orderにはデータベースから取得した実際の注文レコードが入ります。
         
         $currentStatus = $order->status;
