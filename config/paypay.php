@@ -1,4 +1,4 @@
-// config/paypay.php
+
 <?php
 return [
     'api_key'       => env('PAYPAY_API_KEY'),

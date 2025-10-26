@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class OrderController extends Controller
 {
     /**
-     * 注文をデータベースに保存し、決済処理を開始する
+     * 注文をデータベースに保存し、決済処理を開始
      */
     public function store(Request $request)
     {
@@ -86,28 +86,35 @@ class OrderController extends Controller
 
                 $merchantPaymentId = Str::uuid();
 
-                //var_dump($payPayService);
-                //exit;
-
-                // 引数で受け取った $payPayService を使う
+                // サービスコンテナ経由でPayPayServiceのインスタンスを取得し、メソッドを呼び出す
                 $response = (app()->make(PayPayService::class))->createQrCode(
                     $merchantPaymentId,
                     $totalPrice,
                     'qmealでのご注文'
                 );
-                $qrCodeUrl = $response['data']['url'];
+
+                // PayPayServiceは成功時に $response['data'] (配列) を、失敗時に null を返します。
+                // 戻り値が null でないか、かつ 'url' キーが存在するかをチェックします。
+                if (is_null($response) || !isset($response['url'])) {
+                    // PayPayへのリクエストが失敗した場合
+                    $order->status = '支払い失敗'; // ステータスを更新
+                    $order->save();
+                    return redirect()->route('cart.index')->with('error', '決済の準備に失敗しました。');
+                }
             
+                // PayPayServiceが返した配列から 'url' を取得します
+                // (元のコードでは $response['data']['url'] となっていましたが、
+                // PayPayServiceの実装を見ると $response['url'] が正しいです)
+                $payPayUrl = $response['url'];
+
                 // カートを空にする
                 $request->session()->forget('cart');
 
-                // QRコード表示用のビューにデータを渡して表示
-                return view('order.payment', [
-                    'order' => $order,
-                    'qrCodeString' => $qrCodeUrl
-                ]);
+                // ★PayPayの決済画面（$payPayUrl）に直接リダイレクト
+                return redirect()->away($payPayUrl);
 
             } catch (\Exception $e) {
-                // PayPayへのリクエストが失敗した場合
+                // PayPayへのリクエストが失敗した場合（通信エラーなど）
                 $order->status = '支払い失敗'; // ステータスを更新
                 $order->save();
                 return redirect()->route('cart.index')->with('error', '決済の準備に失敗しました。 ' . $e->getMessage());
